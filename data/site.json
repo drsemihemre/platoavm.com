@@ -1,0 +1,21 @@
+{
+  "name": "Plato AVM",
+  "tagline": "Sultanbeyli'nin İlk Yaşam Merkezi",
+  "description": "Uluslararası yaşam standartlarını Sultanbeyli'ye taşıyan Plato Alışveriş Merkezi, bölgenin ilk yaşam merkezi olma özelliğine sahip.",
+  "address": "Fatih Bulvarı No:97, 34920 Sultanbeyli / İstanbul",
+  "phone": "+90 (216) 398 64 64",
+  "phone_raw": "+902163986464",
+  "fax": "+90 (216) 398 68 00",
+  "email": "info@platoavm.com",
+  "hours": "10:00 – 22:00",
+  "coordinates": {
+    "lat": 40.9605,
+    "lng": 29.2740
+  },
+  "social": {
+    "facebook": "https://www.facebook.com/PlatoAVM",
+    "instagram": "https://www.instagram.com/platoavm/",
+    "twitter": "https://x.com/PlatoAVM",
+    "linkedin": "https://www.linkedin.com/company/plato-avm/"
+  }
+}

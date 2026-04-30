@@ -1,0 +1,58 @@
+[
+  {
+    "slug": "kapali-otopark",
+    "title": "KAPALI OTOPARK (Ücretsiz)",
+    "icon": "/images/services/oto_yikama.png",
+    "description": "500 araç kapasiteli 2 katlı kapalı ücretsiz otopark hizmet vermektedir.",
+    "location": "-2. ve -3. Kat"
+  },
+  {
+    "slug": "elektrikli-arac-sarj",
+    "title": "Elektrikli Araç Şarj İstasyonu",
+    "icon": "/images/services/sarj.png",
+    "description": "Voltrun Elektrikli Şarj İstasyonu -2. Katta (Otopark 1) yer almaktadır.",
+    "location": "-2. Kat (Otopark 1)"
+  },
+  {
+    "slug": "oto-yikama",
+    "title": "Oto Yıkama",
+    "icon": "/images/services/oto_yikama.png",
+    "description": "İdeal 3M Oto Yıkama -2. Katta (Otopark 1) konumunda yer almaktadır.",
+    "location": "-2. Kat (Otopark 1)"
+  },
+  {
+    "slug": "atm",
+    "title": "ATM",
+    "icon": "/images/services/atm.png",
+    "description": "-1. katta Akbank, Garanti, Halkbank, QNB Finansbank, TEB, Yapı Kredi ve Ziraat Bankası ATM'leri yer almaktadır.",
+    "location": "-1. Kat"
+  },
+  {
+    "slug": "terzi",
+    "title": "Terzi",
+    "icon": "/images/services/terzi.png",
+    "description": "-2. katında hizmet vermektedir; giysi onarım hizmetleri sunulmaktadır.",
+    "location": "-2. Kat"
+  },
+  {
+    "slug": "bebek-bakim-odasi",
+    "title": "Bebek Bakım Odası",
+    "icon": "/images/services/bebek_bakim.png",
+    "description": "WC koridorlarında anneler ve bebekleri için özel ayrılmış alan bulunmaktadır.",
+    "location": "Tüm Katlar"
+  },
+  {
+    "slug": "mescit",
+    "title": "Mescit",
+    "icon": "/images/services/mescit.png",
+    "description": "Bay ve bayanlara ayrı abdesthane ve mescit bulunmaktadır.",
+    "location": "Tüm Katlar"
+  },
+  {
+    "slug": "engelli-wc",
+    "title": "Engelli WC",
+    "icon": "/images/services/bebek_bakim.png",
+    "description": "Her katta bulunmaktadır ve erişilebilirlik sağlamaktadır.",
+    "location": "Tüm Katlar"
+  }
+]

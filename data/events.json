@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "plato-12-yil-cekilis",
+    "title": "Plato 12. Yıla Özel Çekilişler",
+    "image": "/images/events/Plato-Post.jpg",
+    "start": "2025-01-30T10:00:00+03:00",
+    "end": "2025-02-28T17:00:00+03:00",
+    "description": "Plato AVM 12. yılına özel çekilişler düzenliyor.",
+    "active": false
+  },
+  {
+    "slug": "neseli-dunyam-etkinligi",
+    "title": "Neşeli Dünyam Etkinliği",
+    "image": "/images/events/IMG_7272.jpg",
+    "start": "2025-01-18T14:00:00+03:00",
+    "end": "2025-01-19T18:00:00+03:00",
+    "description": "Çocuklar için eğlenceli etkinlik.",
+    "active": false
+  },
+  {
+    "slug": "0000-kilometre-sinema-filmi",
+    "title": "0000 Kilometre Sinema Filmi – Oyunculu Gösterim",
+    "image": "/images/events/IMG_1660.jpg",
+    "start": "2024-11-10T14:15:00+03:00",
+    "end": "2024-11-10T16:30:00+03:00",
+    "description": "Oyuncular: Derya Pınar AK, Ahmet Haktan ZAVLAK. Yönetmen: Deniz ENYÜKSEK.",
+    "active": false
+  }
+]
