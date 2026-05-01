@@ -9,7 +9,7 @@ export default function Home() {
   const featuredEvents = upcomingEvents.length > 0 ? upcomingEvents : events.slice(0, 3);
 
   const categories = [
-    { href: "/magazalar", label: "Mağazalar", img: "/images/categories/icon-oto-yikama.jpg", count: stores.filter(s => !["Yeme & İçme", "Eğlence", "Hizmet"].includes(s.category)).length },
+    { href: "/magazalar", label: "Mağazalar", img: "/images/categories/icon-oto-yikama.jpg", count: stores.filter(s => s.category !== "Hizmet").length },
     { href: "/yemek", label: "Yemek", img: "/images/stores/coffee-factory.jpg", count: stores.filter(s => s.category === "Yeme & İçme").length },
     { href: "/eglence", label: "Eğlence", img: "/images/stores/cinegreen.jpg", count: stores.filter(s => s.category === "Eğlence").length },
     { href: "/hizmetler", label: "Hizmetler", img: "/images/categories/icon-elektrikli-sarj.jpg", count: services.length },
