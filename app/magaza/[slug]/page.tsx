@@ -51,16 +51,14 @@ export default async function StorePage({ params }: Props) {
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            <div className={`relative aspect-square lg:aspect-[4/3] border border-stone-200 rounded-2xl overflow-hidden ${
-              store.slug === "cinegreen" ? "bg-black" : "bg-white"
-            }`}>
+            <div className="relative aspect-square lg:aspect-[4/3] bg-white border border-stone-200 rounded-2xl overflow-hidden">
               <Image
                 src={store.image}
                 alt={store.name}
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-contain p-6"
+                className="object-contain"
               />
             </div>
             <div>
