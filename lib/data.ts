@@ -13,6 +13,8 @@ export type Store = {
   category: string;
   category_slug: string;
   description: string;
+  ticket_url?: string;
+  external_url?: string;
 };
 
 export type Service = {

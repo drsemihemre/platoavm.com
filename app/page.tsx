@@ -11,7 +11,7 @@ export default function Home() {
   const categories = [
     { href: "/magazalar", label: "Mağazalar", img: "/images/categories/icon-oto-yikama.jpg", count: stores.filter(s => !["Yeme & İçme", "Eğlence", "Hizmet"].includes(s.category)).length },
     { href: "/yemek", label: "Yemek", img: "/images/stores/coffee-factory.jpg", count: stores.filter(s => s.category === "Yeme & İçme").length },
-    { href: "/eglence", label: "Eğlence", img: "/images/hero/plato-SINEMA-SLIDER.jpg", count: stores.filter(s => s.category === "Eğlence").length },
+    { href: "/eglence", label: "Eğlence", img: "/images/stores/cinegreen.jpg", count: stores.filter(s => s.category === "Eğlence").length },
     { href: "/hizmetler", label: "Hizmetler", img: "/images/categories/icon-elektrikli-sarj.jpg", count: services.length },
   ];
 

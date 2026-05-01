@@ -110,15 +110,17 @@
     "description": ""
   },
   {
-    "slug": "cineplato",
-    "name": "CinePlato",
-    "image": "/images/stores/cineplato.jpg",
+    "slug": "cinegreen",
+    "name": "CineGreen Sultanbeyli",
+    "image": "/images/stores/cinegreen.jpg",
     "phone": "0216 398 64 64",
     "floor": "-1. Kat",
     "floor_order": -1,
     "category": "Eğlence",
     "category_slug": "eglence",
-    "description": ""
+    "description": "Plato AVM -1. katta yer alan modern sinema kompleksi. CineGreen ile vizyondaki tüm filmleri konforlu salonlarda izleyebilirsiniz. Online bilet satışı Biletinial üzerinden yapılmaktadır.",
+    "ticket_url": "https://biletinial.com/tr-tr/mekan/cinegreen-sultanbeyli",
+    "external_url": "https://biletinial.com/tr-tr/mekan/cinegreen-sultanbeyli"
   },
   {
     "slug": "coffee-factory",
