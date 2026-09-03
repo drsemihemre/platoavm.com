@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sendFormMail } from "@/lib/mailer";
+
+const PHONE = "0216 398 64 64";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +13,6 @@ export async function POST(req: NextRequest) {
     }
 
     const submission = {
-      type: "leasing",
       company: String(company).slice(0, 200),
       brand: String(brand).slice(0, 200),
       contact: String(contact).slice(0, 200),
@@ -19,25 +21,33 @@ export async function POST(req: NextRequest) {
       phone: String(phone).slice(0, 50),
       email: String(email).slice(0, 200),
       message: String(message || "").slice(0, 5000),
-      ip: req.headers.get("x-forwarded-for") || "",
-      ts: new Date().toISOString(),
     };
 
-    console.log("[LEASING]", JSON.stringify(submission));
+    const result = await sendFormMail({
+      subject: `KİRALAMA BAŞVURUSU — ${submission.brand} (${submission.company})`,
+      heading: "Yeni Kiralama Başvurusu",
+      replyTo: submission.email,
+      fields: {
+        "Firma Ünvanı": submission.company,
+        "Marka Adı": submission.brand,
+        "Yetkili": submission.contact,
+        "Sektör": submission.sector,
+        "Talep Edilen m²": submission.area,
+        "Telefon": submission.phone,
+        "E-posta": submission.email,
+        "Mesaj": submission.message,
+      },
+    });
 
-    const webhook = process.env.LEASING_WEBHOOK_URL || process.env.CONTACT_WEBHOOK_URL;
-    if (webhook) {
-      try {
-        await fetch(webhook, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(submission),
-        });
-      } catch (err) {
-        console.error("Webhook failed:", err);
-      }
+    if (!result.ok) {
+      console.error("[LEASING] GONDERILEMEDI", result.error, JSON.stringify(submission));
+      return NextResponse.json(
+        { error: `Başvurunuz iletilemedi. Lütfen bizi ${PHONE} numaradan arayın.` },
+        { status: 502 }
+      );
     }
 
+    console.log("[LEASING] gonderildi", result.id);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Leasing error:", err);

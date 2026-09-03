@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sendFormMail } from "@/lib/mailer";
+
+const PHONE = "0216 398 64 64";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,31 +13,34 @@ export async function POST(req: NextRequest) {
     }
 
     const submission = {
-      type: "contact",
       name: String(name).slice(0, 200),
       email: String(email).slice(0, 200),
       phone: String(phone || "").slice(0, 50),
       message: String(message).slice(0, 5000),
-      ip: req.headers.get("x-forwarded-for") || "",
-      ua: req.headers.get("user-agent") || "",
-      ts: new Date().toISOString(),
     };
 
-    console.log("[CONTACT]", JSON.stringify(submission));
+    const result = await sendFormMail({
+      subject: `Yeni iletişim mesajı — ${submission.name}`,
+      heading: "Yeni İletişim Mesajı",
+      replyTo: submission.email,
+      fields: {
+        "Ad / Soyad": submission.name,
+        "E-posta": submission.email,
+        "Telefon": submission.phone,
+        "Mesaj": submission.message,
+      },
+    });
 
-    const webhook = process.env.CONTACT_WEBHOOK_URL;
-    if (webhook) {
-      try {
-        await fetch(webhook, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(submission),
-        });
-      } catch (err) {
-        console.error("Webhook failed:", err);
-      }
+    if (!result.ok) {
+      // Sessizce kaybetme: ziyaretçiye durumu bildir, log'a tam kaydı yaz.
+      console.error("[CONTACT] GONDERILEMEDI", result.error, JSON.stringify(submission));
+      return NextResponse.json(
+        { error: `Mesajınız iletilemedi. Lütfen bizi ${PHONE} numaradan arayın.` },
+        { status: 502 }
+      );
     }
 
+    console.log("[CONTACT] gonderildi", result.id);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Contact error:", err);
