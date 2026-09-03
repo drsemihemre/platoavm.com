@@ -72,7 +72,7 @@ export default function KurumsalPage() {
 function Card({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="bg-stone-50 border border-stone-200 rounded-2xl p-8">
-      <div className="w-14 h-14 bg-orange-600 text-white rounded-xl flex items-center justify-center mb-4">
+      <div className="w-14 h-14 bg-orange-700 text-white rounded-xl flex items-center justify-center mb-4">
         {icon}
       </div>
       <h3 className="text-2xl font-bold text-stone-900">{title}</h3>
@@ -84,7 +84,7 @@ function Card({ title, icon, children }: { title: string; icon: React.ReactNode;
 function Stat({ number, label }: { number: string; label: string }) {
   return (
     <div className="text-center">
-      <div className="text-4xl md:text-5xl font-extrabold text-orange-600">{number}</div>
+      <div className="text-4xl md:text-5xl font-extrabold text-orange-700">{number}</div>
       <div className="text-sm font-medium text-stone-600 mt-1">{label}</div>
     </div>
   );

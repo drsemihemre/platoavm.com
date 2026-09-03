@@ -173,7 +173,7 @@ export function StoreEditor({ store, isNew }: { store: Store; isNew?: boolean })
         <button
           onClick={handleSave}
           disabled={saving}
-          className="bg-orange-600 hover:bg-orange-700 disabled:bg-stone-300 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+          className="bg-orange-700 hover:bg-orange-800 disabled:bg-stone-300 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
         >
           {saving ? "Kaydediliyor..." : isNew ? "Oluştur" : "Kaydet"}
         </button>

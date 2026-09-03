@@ -20,7 +20,7 @@ export default function EglencePage() {
       />
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <StoresList stores={items} categories={[]} floors={getFloors()} showCategoryFilter={false} />
+          <StoresList stores={items} categories={[]} floors={getFloors(items)} showCategoryFilter={false} />
         </div>
       </section>
     </>

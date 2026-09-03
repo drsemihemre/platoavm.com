@@ -69,7 +69,7 @@ export function SiteEditor({ site }: { site: Site }) {
       {error && <div className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg p-3">{error}</div>}
       {success && <div className="text-emerald-700 text-sm bg-emerald-50 border border-emerald-200 rounded-lg p-3">Kaydedildi</div>}
 
-      <button onClick={save} disabled={saving} className="bg-orange-600 hover:bg-orange-700 disabled:bg-stone-300 text-white font-semibold px-6 py-3 rounded-lg">
+      <button onClick={save} disabled={saving} className="bg-orange-700 hover:bg-orange-800 disabled:bg-stone-300 text-white font-semibold px-6 py-3 rounded-lg">
         {saving ? "Kaydediliyor..." : "Kaydet"}
       </button>
       <style>{`.input { width: 100%; padding: 0.625rem 0.875rem; border: 1px solid rgb(214 211 209); border-radius: 0.5rem; background: white; }

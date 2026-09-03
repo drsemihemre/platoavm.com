@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
 export function LeasingForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -51,8 +51,9 @@ export function LeasingForm() {
       </div>
       <Field label="E-posta" name="email" type="email" required />
       <div>
-        <label className="block text-sm font-semibold text-stone-700 mb-1">Mesajınız</label>
+        <label htmlFor="mesaj" className="block text-sm font-semibold text-stone-700 mb-1">Mesajınız</label>
         <textarea
+          id="mesaj"
           name="message"
           rows={4}
           className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition resize-none"
@@ -64,7 +65,7 @@ export function LeasingForm() {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-stone-300 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+        className="w-full bg-orange-700 hover:bg-orange-800 disabled:bg-stone-300 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
       >
         {status === "loading" ? "Gönderiliyor..." : "Başvuruyu Gönder"}
       </button>
@@ -72,16 +73,24 @@ export function LeasingForm() {
   );
 }
 
+const AUTOCOMPLETE: Record<string, string> = {
+  name: "name", contact: "name", email: "email", phone: "tel",
+  company: "organization", brand: "organization",
+};
+
 function Field({ label, name, type = "text", required }: { label: string; name: string; type?: string; required?: boolean }) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-sm font-semibold text-stone-700 mb-1">
+      <label htmlFor={id} className="block text-sm font-semibold text-stone-700 mb-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
+        id={id}
         name={name}
         type={type}
         required={required}
+        autoComplete={AUTOCOMPLETE[name]}
         className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition"
       />
     </div>

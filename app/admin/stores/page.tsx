@@ -17,7 +17,7 @@ export default async function AdminStoresPage() {
         </div>
         <Link
           href="/admin/stores/new"
-          className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+          className="bg-orange-700 hover:bg-orange-800 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
         >
           + Yeni Ekle
         </Link>
@@ -50,7 +50,7 @@ export default async function AdminStoresPage() {
                 <td className="px-4 py-2 text-right">
                   <Link
                     href={`/admin/stores/${s.slug}`}
-                    className="text-orange-600 hover:text-orange-700 font-medium"
+                    className="text-orange-700 hover:text-orange-800 font-medium"
                   >
                     Düzenle →
                   </Link>

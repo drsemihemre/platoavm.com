@@ -40,9 +40,9 @@ export default async function StorePage({ params }: Props) {
       <section className="bg-stone-100 py-4">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <nav className="text-sm text-stone-600">
-            <Link href="/" className="hover:text-orange-600">Ana Sayfa</Link>
+            <Link href="/" className="hover:text-orange-700">Ana Sayfa</Link>
             <span className="mx-2">/</span>
-            <Link href="/magazalar" className="hover:text-orange-600">Mağazalar</Link>
+            <Link href="/magazalar" className="hover:text-orange-700">Mağazalar</Link>
             <span className="mx-2">/</span>
             <span className="text-stone-900 font-medium">{store.name}</span>
           </nav>
@@ -80,7 +80,7 @@ export default async function StorePage({ params }: Props) {
                     value={
                       <a
                         href={`tel:${store.phone.replace(/\s/g, "")}`}
-                        className="text-orange-600 hover:text-orange-700 font-semibold"
+                        className="text-orange-700 hover:text-orange-800 font-semibold"
                       >
                         {store.phone}
                       </a>
@@ -95,7 +95,7 @@ export default async function StorePage({ params }: Props) {
                     href={store.ticket_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-full font-semibold transition-colors"
+                    className="inline-flex items-center gap-2 bg-orange-700 hover:bg-orange-800 text-white px-6 py-3 rounded-full font-semibold transition-colors"
                   >
                     <TicketIcon /> Online Bilet Al
                   </a>
@@ -106,7 +106,7 @@ export default async function StorePage({ params }: Props) {
                     className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-colors ${
                       store.ticket_url
                         ? "bg-stone-100 hover:bg-stone-200 text-stone-900"
-                        : "bg-orange-600 hover:bg-orange-700 text-white"
+                        : "bg-orange-700 hover:bg-orange-800 text-white"
                     }`}
                   >
                     <PhoneIcon /> Ara
@@ -136,7 +136,7 @@ export default async function StorePage({ params }: Props) {
                     href={store.ticket_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-orange-600 hover:underline font-semibold"
+                    className="text-orange-700 hover:underline font-semibold"
                   >
                     Biletinial
                   </a>
@@ -147,7 +147,7 @@ export default async function StorePage({ params }: Props) {
                 href={store.ticket_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-full font-semibold transition-colors text-sm"
+                className="inline-flex items-center gap-2 bg-orange-700 hover:bg-orange-800 text-white px-5 py-2.5 rounded-full font-semibold transition-colors text-sm"
               >
                 Tüm Seansları Gör →
               </a>
@@ -187,7 +187,7 @@ export default async function StorePage({ params }: Props) {
                     />
                   </div>
                   <div className="p-3">
-                    <h3 className="font-bold text-sm text-stone-900 group-hover:text-orange-600">{s.name}</h3>
+                    <h3 className="font-bold text-sm text-stone-900 group-hover:text-orange-700">{s.name}</h3>
                     <p className="text-xs text-stone-500">{s.floor}</p>
                   </div>
                 </Link>

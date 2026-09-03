@@ -62,7 +62,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-stone-300 text-white font-semibold py-3 rounded-lg transition-colors"
+        className="w-full bg-orange-700 hover:bg-orange-800 disabled:bg-stone-300 text-white font-semibold py-3 rounded-lg transition-colors"
       >
         {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
       </button>

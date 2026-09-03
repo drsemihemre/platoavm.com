@@ -25,12 +25,12 @@ export default function IletisimPage() {
                 {site.address}
               </ContactCard>
               <ContactCard icon={<PhoneIcon />} title="Telefon">
-                <a href={`tel:${site.phone_raw}`} className="hover:text-orange-600">{site.phone}</a>
+                <a href={`tel:${site.phone_raw}`} className="hover:text-orange-700">{site.phone}</a>
                 <br />
                 <span className="text-sm text-stone-500">Faks: {site.fax}</span>
               </ContactCard>
               <ContactCard icon={<MailIcon />} title="E-posta">
-                <a href={`mailto:${site.email}`} className="hover:text-orange-600">{site.email}</a>
+                <a href={`mailto:${site.email}`} className="hover:text-orange-700">{site.email}</a>
               </ContactCard>
               <ContactCard icon={<ClockIcon />} title="Çalışma Saatleri">
                 Hergün {site.hours}
@@ -47,7 +47,7 @@ export default function IletisimPage() {
           <div className="mt-12 rounded-2xl overflow-hidden border border-stone-200 aspect-[16/7]">
             <iframe
               title="Plato AVM Konum"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3014.9!2d29.27!3d40.96!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sPlato%20AVM!5e0!3m2!1str!2str!4v1700000000"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2533.2604559096485!2d29.257849962845945!3d40.96896812828153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cad06962a5fd63%3A0xd8afc10fac038db6!2zUGxhdG8gQWzEscWfdmVyacWfIE1lcmtlemk!5e0!3m2!1str!2str!4v1716040878114!5m2!1str!2str"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -65,7 +65,7 @@ export default function IletisimPage() {
 function ContactCard({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
     <div className="bg-white border border-stone-200 rounded-2xl p-6 flex gap-4">
-      <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
+      <div className="w-12 h-12 bg-orange-50 text-orange-700 rounded-xl flex items-center justify-center flex-shrink-0">
         {icon}
       </div>
       <div>

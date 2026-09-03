@@ -25,5 +25,14 @@
     "end": "2024-11-10T16:30:00+03:00",
     "description": "Oyuncular: Derya Pınar AK, Ahmet Haktan ZAVLAK. Yönetmen: Deniz ENYÜKSEK.",
     "active": false
+  },
+  {
+    "slug": "yoresel-tatlari-kesfetmek",
+    "title": "Yöresel Tatları Keşfetmek İçin Plato AVM'de Buluşuyoruz",
+    "image": "/images/events/yoresel-tatlar.jpg",
+    "start": "2024-05-31T10:00:00+03:00",
+    "end": "2024-06-26T22:00:00+03:00",
+    "description": "Yöresel lezzetlerin buluştuğu özel etkinlik.",
+    "active": false
   }
 ]

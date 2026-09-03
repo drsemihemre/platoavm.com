@@ -18,7 +18,7 @@ export function StoreCard({ store }: { store: Store }) {
         />
       </div>
       <div className="p-4">
-        <h3 className="font-bold text-base text-stone-900 group-hover:text-orange-600">
+        <h3 className="font-bold text-base text-stone-900 group-hover:text-orange-700">
           {store.name}
         </h3>
         <div className="mt-1 flex items-center justify-between text-xs text-stone-500">

@@ -10,8 +10,11 @@ export const metadata: Metadata = {
 
 export default function Home() {
   const featuredStores = getRetail().slice(0, 8);
-  const upcomingEvents = events.filter((e) => new Date(e.end) > new Date());
-  const featuredEvents = upcomingEvents.length > 0 ? upcomingEvents : events.slice(0, 3);
+  // Yalnizca gelecekteki etkinlikler vitrine cikar. Gecmis etkinlikleri
+  // "guncel" gibi gostermek ziyaretciyi yaniltir; hic yoksa bolum gizlenir.
+  const featuredEvents = events
+    .filter((e) => new Date(e.end) > new Date())
+    .slice(0, 3);
 
   const categories = [
     { href: "/magazalar", label: "Mağazalar", img: "/images/categories/icon-oto-yikama.jpg", count: stores.filter(s => s.category !== "Hizmet").length },
@@ -29,6 +32,7 @@ export default function Home() {
           muted
           loop
           playsInline
+          preload="none"
           className="absolute inset-0 w-full h-full object-cover opacity-40"
           poster="/images/hero/plato-avm.jpg"
         >
@@ -46,7 +50,7 @@ export default function Home() {
               {site.description}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/magazalar" className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-full font-semibold transition-colors">
+              <Link href="/magazalar" className="inline-flex items-center gap-2 bg-orange-700 hover:bg-orange-800 text-white px-6 py-3 rounded-full font-semibold transition-colors">
                 Mağazaları Keşfet
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>
@@ -59,7 +63,7 @@ export default function Home() {
       </section>
 
       {/* INFO BAR */}
-      <section className="bg-orange-600 text-white">
+      <section className="bg-orange-700 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-3">
@@ -121,7 +125,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between flex-wrap gap-4">
             <SectionHeader title="Mağazalar" subtitle="Plato AVM'de yer alan markalar" align="left" />
-            <Link href="/magazalar" className="text-orange-600 hover:text-orange-700 font-semibold text-sm inline-flex items-center gap-2">
+            <Link href="/magazalar" className="text-orange-700 hover:text-orange-800 font-semibold text-sm inline-flex items-center gap-2">
               Tümünü Gör
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
             </Link>
@@ -151,7 +155,7 @@ export default function Home() {
                   />
                 </div>
                 <div className="p-6">
-                  <time className="text-xs font-semibold text-orange-600 uppercase tracking-wide">
+                  <time className="text-xs font-semibold text-orange-700 uppercase tracking-wide">
                     {new Date(event.start).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
                   </time>
                   <h3 className="mt-2 text-lg font-bold text-stone-900 leading-tight">{event.title}</h3>

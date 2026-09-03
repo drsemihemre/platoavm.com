@@ -61,7 +61,7 @@ function EventGrid({ events }: { events: typeof import("@/lib/data").events }) {
             />
           </div>
           <div className="p-6">
-            <time className="text-xs font-semibold text-orange-600 uppercase tracking-wide">
+            <time className="text-xs font-semibold text-orange-700 uppercase tracking-wide">
               {new Date(event.start).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
               {" - "}
               {new Date(event.end).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}

@@ -26,7 +26,7 @@ export default function HizmetlerPage() {
                   <Image src={service.icon} alt={service.title} width={40} height={40} className="object-contain" />
                 </div>
                 <h3 className="text-xl font-bold text-stone-900">{service.title}</h3>
-                <p className="text-sm font-semibold text-orange-600 mt-1">{service.location}</p>
+                <p className="text-sm font-semibold text-orange-700 mt-1">{service.location}</p>
                 <p className="text-stone-600 mt-3 leading-relaxed">{service.description}</p>
               </article>
             ))}

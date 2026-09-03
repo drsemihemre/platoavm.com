@@ -15,7 +15,7 @@ export default async function AdminEventsPage() {
           <h1 className="text-3xl font-extrabold text-stone-900">Etkinlikler</h1>
           <p className="text-stone-600 mt-1">{events.length} kayıt</p>
         </div>
-        <Link href="/admin/events/new" className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors">
+        <Link href="/admin/events/new" className="bg-orange-700 hover:bg-orange-800 text-white font-semibold px-4 py-2 rounded-lg transition-colors">
           + Yeni Ekle
         </Link>
       </div>

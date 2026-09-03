@@ -25,6 +25,21 @@ const nextConfig: NextConfig = {
       { source: "/kvkk/plato_avm_kvkk.pdf", destination: "/kvkk", permanent: true },
       { source: "/wp-admin/:path*", destination: "/", permanent: false },
       { source: "/wp-login.php", destination: "/", permanent: false },
+
+      // Google'in bildigi eski sitemap adresi bosa dusmesin
+      { source: "/wp-sitemap.xml", destination: "/sitemap.xml", permanent: true },
+      { source: "/wp-sitemap-:path(.*)", destination: "/sitemap.xml", permanent: true },
+    ];
+  },
+  // Gorseller ve video her sayfa gecisinde yeniden dogrulanmasin
+  async headers() {
+    return [
+      {
+        source: "/images/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
     ];
   },
 };

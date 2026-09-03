@@ -36,6 +36,7 @@ export function StoresList({ stores, categories, floors, showCategoryFilter = tr
             <input
               type="search"
               placeholder="Mağaza adı ara..."
+              aria-label="Mağaza adı ara"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 rounded-lg border border-stone-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition"
@@ -45,6 +46,7 @@ export function StoresList({ stores, categories, floors, showCategoryFilter = tr
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              aria-label="Kategoriye göre filtrele"
               className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition bg-white"
             >
               <option value="">Tüm Kategoriler</option>
@@ -56,6 +58,7 @@ export function StoresList({ stores, categories, floors, showCategoryFilter = tr
           <select
             value={floor}
             onChange={(e) => setFloor(e.target.value)}
+            aria-label="Kata göre filtrele"
             className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition bg-white"
           >
             <option value="">Tüm Katlar</option>
@@ -71,7 +74,7 @@ export function StoresList({ stores, categories, floors, showCategoryFilter = tr
           {(category || floor || query) && (
             <button
               onClick={() => { setCategory(""); setFloor(""); setQuery(""); }}
-              className="text-orange-600 hover:text-orange-700 font-medium"
+              className="text-orange-700 hover:text-orange-800 font-medium"
             >
               Filtreleri Temizle
             </button>

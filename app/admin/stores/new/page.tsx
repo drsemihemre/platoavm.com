@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default function NewStorePage() {
   return (
     <div>
-      <Link href="/admin/stores" className="text-sm text-stone-600 hover:text-orange-600">← Mağazalar</Link>
+      <Link href="/admin/stores" className="text-sm text-stone-600 hover:text-orange-700">← Mağazalar</Link>
       <h1 className="text-3xl font-extrabold text-stone-900 mt-2 mb-6">Yeni Mağaza</h1>
       <StoreEditor
         isNew

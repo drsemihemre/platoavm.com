@@ -81,9 +81,9 @@ export function getCategories() {
     .sort((a, b) => b.count - a.count);
 }
 
-export function getFloors() {
+export function getFloors(list: Store[] = stores) {
   const floors = new Map<string, { count: number; order: number }>();
-  stores.forEach((s) => {
+  list.forEach((s) => {
     if (s.floor) {
       const existing = floors.get(s.floor);
       floors.set(s.floor, {
