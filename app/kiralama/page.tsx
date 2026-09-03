@@ -5,6 +5,7 @@ import { LeasingForm } from "@/components/LeasingForm";
 export const metadata: Metadata = {
   title: "Kiralama",
   description: "Plato AVM'de mağaza kiralama başvurusu.",
+  alternates: { canonical: "/kiralama" },
 };
 
 export default function KiralamaPage() {

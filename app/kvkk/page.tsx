@@ -5,6 +5,7 @@ import { site } from "@/lib/data";
 export const metadata: Metadata = {
   title: "KVKK Aydınlatma Metni",
   description: "Kişisel Verilerin Korunması Kanunu uyarınca aydınlatma metni.",
+  alternates: { canonical: "/kvkk" },
 };
 
 export default function KvkkPage() {

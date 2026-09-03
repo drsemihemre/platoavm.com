@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
 
       // The Events Calendar tekil etkinlik sayfaları -> etkinlikler
       { source: "/etkinlik/:slug*", destination: "/etkinlikler", permanent: true },
+      // The Events Calendar ay/liste görünümleri (eski sitede gerçek sayfalardı)
+      { source: "/etkinlikler/ay/:path*", destination: "/etkinlikler", permanent: true },
+      { source: "/etkinlikler/liste/:path*", destination: "/etkinlikler", permanent: true },
 
       // WordPress kalıntıları
       { source: "/kvkk/plato_avm_kvkk.pdf", destination: "/kvkk", permanent: true },

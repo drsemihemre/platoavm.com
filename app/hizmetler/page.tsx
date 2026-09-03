@@ -6,6 +6,7 @@ import { PageHero } from "@/components/PageHero";
 export const metadata: Metadata = {
   title: "Hizmetler",
   description: "Plato AVM ziyaretçilerine sunulan hizmetler ve olanaklar.",
+  alternates: { canonical: "/hizmetler" },
 };
 
 export default function HizmetlerPage() {

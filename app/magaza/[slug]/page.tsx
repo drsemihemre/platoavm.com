@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: store.description || `${store.name} - ${site.name}`,
       images: [store.image],
     },
+    alternates: { canonical: `/magaza/${store.slug}` },
   };
 }
 

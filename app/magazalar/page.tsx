@@ -6,6 +6,7 @@ import { StoresList } from "@/components/StoresList";
 export const metadata: Metadata = {
   title: "Mağazalar",
   description: "Plato AVM'de yer alan tüm mağazaları, restoranları ve eğlence merkezlerini kategori ve kata göre keşfedin.",
+  alternates: { canonical: "/magazalar" },
 };
 
 export default function MagazalarPage() {

@@ -6,6 +6,7 @@ import { PageHero } from "@/components/PageHero";
 export const metadata: Metadata = {
   title: "Kurumsal",
   description: "Plato AVM hakkında, vizyonumuz ve misyonumuz.",
+  alternates: { canonical: "/kurumsal" },
 };
 
 export default function KurumsalPage() {

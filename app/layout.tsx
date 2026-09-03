@@ -5,6 +5,7 @@ import Image from "next/image";
 import "./globals.css";
 import { site } from "@/lib/data";
 import { Analytics } from "@/components/Analytics";
+import { StructuredData } from "@/components/StructuredData";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -25,8 +26,18 @@ export const metadata: Metadata = {
     siteName: site.name,
     locale: "tr_TR",
     type: "website",
+    images: [{ url: "/images/hero/plato-avm.jpg", width: 1200, height: 630, alt: site.name }],
   },
-  alternates: { canonical: "/" },
+  twitter: {
+    card: "summary_large_image",
+    title: site.name,
+    description: site.description,
+    images: ["/images/hero/plato-avm.jpg"],
+  },
+  // DİKKAT: Buraya `alternates: { canonical: "/" }` KOYMAYIN.
+  // Kök layout'taki canonical tüm alt sayfalara miras kalır ve her sayfa
+  // ana sayfayı canonical gösterir — iç sayfalar indeksten düşer.
+  // Canonical her sayfanın kendi metadata'sında tanımlanır.
 };
 
 const NAV = [
@@ -52,6 +63,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <Analytics />
+        <StructuredData />
       </body>
     </html>
   );

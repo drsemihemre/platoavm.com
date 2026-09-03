@@ -6,6 +6,7 @@ import { StoresList } from "@/components/StoresList";
 export const metadata: Metadata = {
   title: "Eğlence",
   description: "Plato AVM'deki eğlence merkezleri: CineGreen Sinema, Funny Center, Go-Kart, Magic Land.",
+  alternates: { canonical: "/eglence" },
 };
 
 export default function EglencePage() {

@@ -6,6 +6,7 @@ import { ContactForm } from "@/components/ContactForm";
 export const metadata: Metadata = {
   title: "İletişim",
   description: "Plato AVM iletişim bilgileri ve mesaj formu.",
+  alternates: { canonical: "/iletisim" },
 };
 
 export default function IletisimPage() {

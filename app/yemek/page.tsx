@@ -6,6 +6,7 @@ import { StoresList } from "@/components/StoresList";
 export const metadata: Metadata = {
   title: "Yemek",
   description: "Plato AVM'deki restoran, kafe ve yeme-içme işletmeleri.",
+  alternates: { canonical: "/yemek" },
 };
 
 export default function YemekPage() {

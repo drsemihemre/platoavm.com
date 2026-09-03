@@ -7,6 +7,7 @@ import { PageHero } from "@/components/PageHero";
 export const metadata: Metadata = {
   title: "Galeri",
   description: "Plato AVM mağaza ve mekanlarından kareler.",
+  alternates: { canonical: "/galeri" },
 };
 
 export default function GaleriPage() {
