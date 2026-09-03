@@ -43,10 +43,14 @@ export async function sendFormMail(opts: {
   fields: Record<string, string>;
   replyTo?: string;
 }): Promise<MailResult> {
-  const user = process.env.SMTP_USER?.trim();
+  const user = process.env.SMTP_USER?.trim().replace(/^["\u201C\u201D]+|["\u201C\u201D]+$/g, "");
   // Google, uygulama şifresini "abcd efgh ijkl mnop" biçiminde gösterir;
   // olduğu gibi yapıştırılırsa Gmail reddeder. Boşlukları temizliyoruz.
-  const pass = process.env.SMTP_PASS?.replace(/\s+/g, "");
+  // Google şifreyi "abcd efgh ijkl mnop" biçiminde gösterir; ayrıca değer
+  // panele tırnakla yapıştırılmış olabilir. İkisini de temizle.
+  const pass = process.env.SMTP_PASS
+    ?.replace(/\s+/g, "")
+    .replace(/^["'\u201C\u201D\u2018\u2019]+|["'\u201C\u201D\u2018\u2019]+$/g, "");
   // Boş değer, tanımsız değer kadar sık görülen bir hata: ikisini ayırt et.
   if (!user && !pass) {
     return { ok: false, error: "SMTP_USER ve SMTP_PASS boş veya tanımsız" };
