@@ -43,8 +43,10 @@ export async function sendFormMail(opts: {
   fields: Record<string, string>;
   replyTo?: string;
 }): Promise<MailResult> {
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER?.trim();
+  // Google, uygulama şifresini "abcd efgh ijkl mnop" biçiminde gösterir;
+  // olduğu gibi yapıştırılırsa Gmail reddeder. Boşlukları temizliyoruz.
+  const pass = process.env.SMTP_PASS?.replace(/\s+/g, "");
   if (!user || !pass) {
     return { ok: false, error: "SMTP_USER / SMTP_PASS tanımlı değil" };
   }

@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       // Sessizce kaybetme: ziyaretçiye durumu bildir, log'a tam kaydı yaz.
       console.error("[CONTACT] GONDERILEMEDI", result.error, JSON.stringify(submission));
       return NextResponse.json(
-        { error: `Mesajınız iletilemedi. Lütfen bizi ${PHONE} numaradan arayın.` },
+        { error: `Mesajınız iletilemedi. Lütfen bizi ${PHONE} numaradan arayın.`, detail: process.env.MAIL_DEBUG === "1" ? result.error : undefined },
         { status: 502 }
       );
     }

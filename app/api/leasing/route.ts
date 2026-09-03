@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     if (!result.ok) {
       console.error("[LEASING] GONDERILEMEDI", result.error, JSON.stringify(submission));
       return NextResponse.json(
-        { error: `Başvurunuz iletilemedi. Lütfen bizi ${PHONE} numaradan arayın.` },
+        { error: `Başvurunuz iletilemedi. Lütfen bizi ${PHONE} numaradan arayın.`, detail: process.env.MAIL_DEBUG === "1" ? result.error : undefined },
         { status: 502 }
       );
     }
