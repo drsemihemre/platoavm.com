@@ -1,18 +1,22 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 /**
- * Form bildirimlerini e-posta ile iletir.
+ * Form bildirimlerini Google Workspace (Gmail SMTP) üzerinden iletir.
  *
  * Tasarım notu: Eski WordPress sitesinde formlar `admin@plato.zikrifikir.com`
- * adresine gönderiliyordu; o alan adı DNS'te bulunmadığı için (NXDOMAIN)
- * başvurular sessizce kayboluyordu. Bu yüzden burada SESSIZ BASARISIZLIK YOK:
+ * adresine gönderiliyordu; o alan adı DNS'te bulunmuyor (NXDOMAIN), yani
+ * başvurular sessizce kayboluyordu. Bu yüzden burada SESSİZ BAŞARISIZLIK YOK:
  * gönderim başarısız olursa çağıran tarafa hata döner ve ziyaretçiye
  * telefonla arama alternatifi gösterilir.
+ *
+ * Gerekli ortam değişkenleri (Vercel):
+ *   SMTP_USER  – gönderici Google Workspace hesabı (örn. semihemre@platoavm.com)
+ *   SMTP_PASS  – o hesap için üretilmiş Uygulama Şifresi (16 karakter)
+ *   FORM_TO_EMAIL (opsiyonel, varsayılan yonetim@platoavm.com)
  */
 
 const TO = process.env.FORM_TO_EMAIL || "yonetim@platoavm.com";
-// Resend'de platoavm.com doğrulanana kadar onboarding@resend.dev kullanılabilir.
-const FROM = process.env.FORM_FROM_EMAIL || "Plato AVM <onboarding@resend.dev>";
+const FROM_NAME = process.env.FORM_FROM_NAME || "Plato AVM Web Sitesi";
 
 export type MailResult = { ok: true; id?: string } | { ok: false; error: string };
 
@@ -22,7 +26,7 @@ function esc(s: string) {
   );
 }
 
-export function renderRows(fields: Record<string, string>) {
+function rows(fields: Record<string, string>) {
   return Object.entries(fields)
     .filter(([, v]) => v && v.trim())
     .map(
@@ -39,9 +43,10 @@ export async function sendFormMail(opts: {
   fields: Record<string, string>;
   replyTo?: string;
 }): Promise<MailResult> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    return { ok: false, error: "RESEND_API_KEY tanımlı değil" };
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  if (!user || !pass) {
+    return { ok: false, error: "SMTP_USER / SMTP_PASS tanımlı değil" };
   }
 
   const text = Object.entries(opts.fields)
@@ -52,24 +57,35 @@ export async function sendFormMail(opts: {
   const html = `<!doctype html><html lang="tr"><body style="margin:0;background:#fafaf9;padding:24px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#1c1917">
   <div style="max-width:640px;margin:0 auto;background:#fff;border:1px solid #e7e5e4;border-radius:12px;overflow:hidden">
     <div style="background:#ea580c;color:#fff;padding:16px 20px;font-size:18px;font-weight:700">${esc(opts.heading)}</div>
-    <table style="width:100%;border-collapse:collapse;font-size:14px">${renderRows(opts.fields)}</table>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">${rows(opts.fields)}</table>
     <div style="padding:12px 20px;background:#fafaf9;border-top:1px solid #e7e5e4;font-size:12px;color:#78716c">
       platoavm.com üzerinden gönderildi · ${esc(new Date().toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" }))}
     </div>
   </div></body></html>`;
 
   try {
-    const resend = new Resend(apiKey);
-    const { data, error } = await resend.emails.send({
-      from: FROM,
-      to: [TO],
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: { user, pass },
+      // Serverless ortamda takılı kalmasın:
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 15_000,
+    });
+
+    const info = await transporter.sendMail({
+      // Gmail, From adresinin kimliği doğrulanmış hesap (veya alias) olmasını şart koşar.
+      from: `"${FROM_NAME}" <${user}>`,
+      to: TO,
       subject: opts.subject,
-      html,
       text,
+      html,
       ...(opts.replyTo ? { replyTo: opts.replyTo } : {}),
     });
-    if (error) return { ok: false, error: error.message || String(error) };
-    return { ok: true, id: data?.id };
+
+    return { ok: true, id: info.messageId };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
