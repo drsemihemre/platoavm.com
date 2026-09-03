@@ -47,8 +47,17 @@ export async function sendFormMail(opts: {
   // Google, uygulama şifresini "abcd efgh ijkl mnop" biçiminde gösterir;
   // olduğu gibi yapıştırılırsa Gmail reddeder. Boşlukları temizliyoruz.
   const pass = process.env.SMTP_PASS?.replace(/\s+/g, "");
-  if (!user || !pass) {
-    return { ok: false, error: "SMTP_USER / SMTP_PASS tanımlı değil" };
+  // Boş değer, tanımsız değer kadar sık görülen bir hata: ikisini ayırt et.
+  if (!user && !pass) {
+    return { ok: false, error: "SMTP_USER ve SMTP_PASS boş veya tanımsız" };
+  }
+  if (!user) return { ok: false, error: "SMTP_USER boş" };
+  if (!pass) return { ok: false, error: "SMTP_PASS boş" };
+  if (pass.length !== 16) {
+    return {
+      ok: false,
+      error: `SMTP_PASS uzunluğu ${pass.length}, beklenen 16 (Google uygulama şifresi)`,
+    };
   }
 
   const text = Object.entries(opts.fields)
