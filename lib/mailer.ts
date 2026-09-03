@@ -58,9 +58,17 @@ export async function sendFormMail(opts: {
   if (!user) return { ok: false, error: "SMTP_USER boş" };
   if (!pass) return { ok: false, error: "SMTP_PASS boş" };
   if (pass.length !== 16) {
+    // Değeri ASLA sızdırma; yalnızca biçim ipucu ver.
+    const sekil = [
+      /[0-9]/.test(pass) ? "rakam" : null,
+      /[A-Z]/.test(pass) ? "buyuk-harf" : null,
+      /[^A-Za-z0-9]/.test(pass) ? "sembol" : null,
+    ].filter(Boolean).join("+") || "sadece-kucuk-harf";
     return {
       ok: false,
-      error: `SMTP_PASS uzunluğu ${pass.length}, beklenen 16 (Google uygulama şifresi)`,
+      error:
+        `SMTP_PASS uzunluğu ${pass.length}, beklenen 16. İçerik biçimi: ${sekil}. ` +
+        `Google uygulama şifresi tam 16 küçük harftir (rakam/sembol içermez).`,
     };
   }
 
