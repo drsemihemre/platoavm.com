@@ -36,7 +36,7 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-cover opacity-40"
           poster="/images/hero/plato-avm.jpg"
         >
-          <source src="/images/hero/Plato-AVM-Tanitim-Filmi.mp4" type="video/mp4" />
+          <source src="/images/hero/hero-loop.mp4" type="video/mp4" />
         </video>
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 md:py-36">
           <div className="max-w-2xl">
@@ -138,7 +138,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* EVENTS */}
+      {/* EVENTS — yaklasan etkinlik yoksa bolum hic cikmaz */}
+      {featuredEvents.length > 0 && (
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader title="Etkinlikler" subtitle="Plato'da yaşanan keyifli anlar" />
@@ -166,6 +167,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* SERVICES */}
       <section className="py-16 bg-stone-50">

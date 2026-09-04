@@ -2,6 +2,7 @@ import storesData from "@/data/stores.json";
 import servicesData from "@/data/services.json";
 import eventsData from "@/data/events.json";
 import siteData from "@/data/site.json";
+import galleryData from "@/data/gallery.json";
 
 export type Store = {
   slug: string;
@@ -57,7 +58,10 @@ export type Site = {
 export const stores = storesData as Store[];
 export const services = servicesData as Service[];
 export const events = eventsData as Event[];
+export type GalleryPhoto = { src: string; alt: string };
+
 export const site = siteData as Site;
+export const gallery = galleryData as GalleryPhoto[];
 
 export function getStoresByCategory(category: string) {
   return stores.filter((s) => s.category === category);
