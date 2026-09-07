@@ -1,3 +1,5 @@
+import { timingSafeEqual } from "node:crypto";
+import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
@@ -46,9 +48,44 @@ export async function getSession(): Promise<{ username: string } | null> {
   }
 }
 
-export function verifyCredentials(username: string, password: string): boolean {
+/**
+ * Sabit süreli karşılaştırma: `===` girilen şifrenin doğru şifreyle kaç
+ * karakter örtüştüğünü zamanlama üzerinden sızdırabilir.
+ */
+function safeEqual(a: string, b: string): boolean {
+  const left = Buffer.from(a, "utf8");
+  const right = Buffer.from(b, "utf8");
+  if (left.length !== right.length) {
+    // Uzunluk farkında da sabit süre harca, sonra reddet.
+    timingSafeEqual(left, left);
+    return false;
+  }
+  return timingSafeEqual(left, right);
+}
+
+/**
+ * Yönetici kimlik doğrulaması.
+ *
+ * Tercih edilen: ADMIN_PASSWORD_HASH (bcrypt özeti) — ortam değişkenlerini
+ * görebilen biri düz şifreyi okuyamaz. Tanımlı değilse ADMIN_PASSWORD (düz)
+ * kullanılır; geriye dönük uyumluluk için korundu.
+ *
+ * Kullanıcı adı ve şifre kontrolü kısa devre yapmadan (ikisi de hesaplanarak)
+ * birleştirilir; böylece "kullanıcı adı yanlış" ile "şifre yanlış" arasındaki
+ * süre farkı ayırt edilemez.
+ */
+export async function verifyCredentials(username: string, password: string): Promise<boolean> {
   const adminUser = process.env.ADMIN_USERNAME || "admin";
-  const adminPass = process.env.ADMIN_PASSWORD;
-  if (!adminPass) return false;
-  return username === adminUser && password === adminPass;
+  const hash = process.env.ADMIN_PASSWORD_HASH;
+  const plain = process.env.ADMIN_PASSWORD;
+
+  const userOk = safeEqual(username, adminUser);
+
+  if (hash) {
+    const passOk = await bcrypt.compare(password, hash);
+    return userOk && passOk;
+  }
+  if (!plain) return false;
+  const passOk = safeEqual(password, plain);
+  return userOk && passOk;
 }

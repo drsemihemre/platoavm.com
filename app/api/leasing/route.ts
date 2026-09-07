@@ -1,13 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendFormMail } from "@/lib/mailer";
+import { guardFormRequest, PHONE } from "@/lib/form-guard";
+import { maskEmail, maskName, maskPhone, maskText, referenceCode } from "@/lib/privacy";
 
-const PHONE = "0216 398 64 64";
+/** Formun sığmayacağı büyüklükteki gövdeyi ayrıştırmadan reddet. */
+const MAX_BODY_BYTES = 32 * 1024;
 
 export async function POST(req: NextRequest) {
   try {
-    const data = await req.json();
-    const { company, brand, contact, sector, area, phone, email, message } = data;
+    const declaredSize = Number(req.headers.get("content-length") ?? 0);
+    if (declaredSize > MAX_BODY_BYTES) {
+      return NextResponse.json({ error: "Gönderilen içerik çok büyük" }, { status: 413 });
+    }
 
+    const data = await req.json();
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      return NextResponse.json({ error: "Geçersiz istek" }, { status: 400 });
+    }
+
+    // Kiralama başvurusu iletişim formundan çok daha seyrek gelir;
+    // bu yüzden IP başına limit daha dar tutuldu.
+    const blocked = await guardFormRequest(req, data as Record<string, unknown>, {
+      tag: "leasing",
+      perIpLimit: 4,
+    });
+    if (blocked) {
+      console.warn("[LEASING] engellendi", blocked.reason, blocked.ref);
+      return blocked.response;
+    }
+
+    const { company, brand, contact, sector, area, phone, email, message } =
+      data as Record<string, unknown>;
     if (!company || !brand || !contact || !sector || !phone || !email) {
       return NextResponse.json({ error: "Zorunlu alanlar eksik" }, { status: 400 });
     }
@@ -40,9 +63,26 @@ export async function POST(req: NextRequest) {
     });
 
     if (!result.ok) {
-      console.error("[LEASING] GONDERILEMEDI", result.error, JSON.stringify(submission));
+      // KVKK: log'a maskeli özet + referans kodu; ham kişisel veri yazılmaz.
+      const ref = referenceCode();
+      console.error(
+        "[LEASING] GONDERILEMEDI",
+        JSON.stringify({
+          ref,
+          hata: result.error,
+          firma: maskName(submission.company),
+          marka: maskName(submission.brand),
+          yetkili: maskName(submission.contact),
+          telefon: maskPhone(submission.phone),
+          eposta: maskEmail(submission.email),
+          mesaj: maskText(submission.message),
+        })
+      );
       return NextResponse.json(
-        { error: `Başvurunuz iletilemedi. Lütfen bizi ${PHONE} numaradan arayın.` },
+        {
+          error: `Başvurunuz iletilemedi. Lütfen bizi ${PHONE} numaradan arayın (referans: ${ref}).`,
+          ref,
+        },
         { status: 502 }
       );
     }

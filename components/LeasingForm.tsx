@@ -1,17 +1,23 @@
 "use client";
 
 import { useId, useState } from "react";
+import { FormShield, useFillTimer } from "@/components/FormShield";
+import { ELAPSED_FIELD } from "@/lib/form-fields";
 
 export function LeasingForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState<string>("");
+  const fillMs = useFillTimer();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // React, işleyici döndükten sonra currentTarget'ı null'lar; await'ten
+    // sonra kullanılamaz. Bu yüzden form referansı burada yakalanıyor.
+    const form = e.currentTarget;
     setStatus("loading");
     setError("");
-    const fd = new FormData(e.currentTarget);
-    const payload = Object.fromEntries(fd.entries());
+    const fd = new FormData(form);
+    const payload = { ...Object.fromEntries(fd.entries()), [ELAPSED_FIELD]: fillMs() };
     try {
       const res = await fetch("/api/leasing", {
         method: "POST",
@@ -23,7 +29,7 @@ export function LeasingForm() {
         throw new Error(data.error || "Bir hata oluştu");
       }
       setStatus("success");
-      e.currentTarget.reset();
+      form.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Bilinmeyen hata");
       setStatus("error");
@@ -41,6 +47,7 @@ export function LeasingForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <FormShield />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field label="Firma Ünvanı" name="company" required />
         <Field label="Marka Adı" name="brand" required />
