@@ -1,13 +1,13 @@
 "use client";
 
 import { useId, useState } from "react";
-import { FormShield, useFillTimer } from "@/components/FormShield";
+import { useFormShield } from "@/components/FormShield";
 import { ELAPSED_FIELD } from "@/lib/form-fields";
 
 export function LeasingForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState<string>("");
-  const fillMs = useFillTimer();
+  const { shield, fillMs, resetChallenge } = useFormShield();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,6 +33,10 @@ export function LeasingForm() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Bilinmeyen hata");
       setStatus("error");
+    } finally {
+      // Turnstile jetonu tek kullanimliktir: basarili da olsa basarisiz da
+      // olsa tazelenmezse ikinci gonderim reddedilir.
+      resetChallenge();
     }
   }
 
@@ -47,7 +51,7 @@ export function LeasingForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <FormShield />
+      {shield}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field label="Firma Ünvanı" name="company" required />
         <Field label="Marka Adı" name="brand" required />

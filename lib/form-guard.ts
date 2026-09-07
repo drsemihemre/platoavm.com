@@ -1,62 +1,79 @@
 import { NextResponse } from "next/server";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { checkQuota, rateLimit, recordUse } from "@/lib/rate-limit";
 import { checkLocalSignals, verifyTurnstile } from "@/lib/spam";
 import { referenceCode } from "@/lib/privacy";
 
 /**
  * Herkese açık form uç noktalarının ortak bekçisi.
  *
- * İki route da (iletişim, kiralama) aynı sırayı uygular; kural değişikliği
- * tek yerden yapılsın diye burada toplandı.
+ * Sıra önemli ve bilinçli:
+ *   1. guardIp()        — gövde AYRIŞTIRILMADAN önce; bozuk JSON gönderen bir
+ *                         bot da hız sınırına takılsın diye.
+ *   2. guardPayload()   — honeypot, doldurma süresi, Turnstile.
+ *   3. (route) zorunlu alan doğrulaması
+ *   4. checkMailQuota() — e-posta göndermeden HEMEN önce, sayaç ARTIRILMADAN
+ *   5. recordMailSent() — yalnızca gönderim BAŞARILI olduğunda
  *
- * İlke: SESSİZ DÜŞÜRME YOK. Bir istek reddedilirse ziyaretçi bunu görür ve
- * telefonla arama alternatifi sunulur — yanlış pozitif bir başvuruyu asla
- * "gönderildi" yanılsamasıyla çöpe atmaz. (Botun bundan öğreneceği bir şey
- * yok; küçük bir kurumsal sitede saldırgan geri bildirimi zaten uyarlamıyor.)
+ * 4 ve 5'in ayrı olması kritik: aksi hâlde hiç e-posta üretmeyen istekler
+ * (eksik alan, SMTP hatası) kotayı yer ve saldırgan tek bir mail bile
+ * göndermeden formu herkese kapatabilirdi.
+ *
+ * İlke: SESSİZ DÜŞÜRME YOK. Reddedilen istek ziyaretçiye bildirilir ve
+ * telefon alternatifi sunulur — yanlış pozitif bir başvuruyu asla
+ * "gönderildi" yanılsamasıyla çöpe atmaz.
  */
 
 const PHONE = "0216 398 64 64";
 
 /**
- * Örnek başına saatlik toplam e-posta tavanı. IP değiştirerek per-IP limitini
- * aşan dağıtık bir bot bile Google Workspace günlük kotasını (~2.000 ileti)
- * tüketemesin diye son emniyet supabı.
+ * Form başına saatlik gerçek e-posta tavanı (örnek başına). Google Workspace
+ * günlük ~2.000 ileti kotasının son emniyet supabı. Formlar ayrı sayılır ki
+ * iletişim trafiği kiralama başvurularını boğmasın.
  */
-const GLOBAL_HOURLY_MAIL_CAP = 40;
+const HOURLY_MAIL_CAP = 30;
+const HOUR_MS = 60 * 60 * 1000;
 const DEFAULT_WINDOW_MS = 15 * 60 * 1000;
 
 export type GuardFailure = { response: NextResponse; reason: string; ref: string };
 
-function reject(status: number, message: string, reason: string, retryAfter?: number): GuardFailure {
+export function reject(
+  status: number,
+  message: string,
+  reason: string,
+  retryAfter?: number
+): GuardFailure {
   const ref = referenceCode();
   const response = NextResponse.json(
     { error: message, ref },
-    {
-      status,
-      headers: retryAfter ? { "Retry-After": String(retryAfter) } : undefined,
-    }
+    { status, headers: retryAfter ? { "Retry-After": String(retryAfter) } : undefined }
   );
   return { response, reason, ref };
 }
 
-export async function guardFormRequest(
-  req: Request,
-  data: Record<string, unknown>,
+/** 1. adım: IP başına istek sınırı. Gövde okunmadan çağrılmalı. */
+export function guardIp(
+  ip: string,
   opts: { tag: string; perIpLimit: number; windowMs?: number }
+): GuardFailure | null {
+  const verdict = rateLimit(
+    `${opts.tag}:${ip}`,
+    opts.perIpLimit,
+    opts.windowMs ?? DEFAULT_WINDOW_MS
+  );
+  if (verdict.ok) return null;
+  return reject(
+    429,
+    `Kısa sürede çok fazla gönderim yapıldı. Lütfen biraz sonra tekrar deneyin veya bizi ${PHONE} numaradan arayın.`,
+    "rate-limit-ip",
+    verdict.retryAfter
+  );
+}
+
+/** 2. adım: honeypot, doldurma süresi ve (yapılandırılmışsa) Turnstile. */
+export async function guardPayload(
+  data: Record<string, unknown>,
+  ip: string
 ): Promise<GuardFailure | null> {
-  const ip = clientIp(req);
-  const windowMs = opts.windowMs ?? DEFAULT_WINDOW_MS;
-
-  const perIp = rateLimit(`${opts.tag}:${ip}`, opts.perIpLimit, windowMs);
-  if (!perIp.ok) {
-    return reject(
-      429,
-      `Kısa sürede çok fazla gönderim yapıldı. Lütfen biraz sonra tekrar deneyin veya bizi ${PHONE} numaradan arayın.`,
-      "rate-limit-ip",
-      perIp.retryAfter
-    );
-  }
-
   const local = checkLocalSignals(data);
   if (!local.ok) {
     if (local.reason === "too-fast") {
@@ -82,17 +99,24 @@ export async function guardFormRequest(
     );
   }
 
-  const globalCap = rateLimit("global:mail", GLOBAL_HOURLY_MAIL_CAP, 60 * 60 * 1000);
-  if (!globalCap.ok) {
-    return reject(
-      429,
-      `Sistem şu anda yoğun. Lütfen kısa süre sonra tekrar deneyin veya bizi ${PHONE} numaradan arayın.`,
-      "rate-limit-global",
-      globalCap.retryAfter
-    );
-  }
-
   return null;
+}
+
+/** 4. adım: e-posta göndermeden hemen önce — sayacı ARTIRMAZ. */
+export function checkMailQuota(tag: string): GuardFailure | null {
+  const verdict = checkQuota(`global:mail:${tag}`, HOURLY_MAIL_CAP);
+  if (verdict.ok) return null;
+  return reject(
+    429,
+    `Sistem şu anda yoğun. Lütfen kısa süre sonra tekrar deneyin veya bizi ${PHONE} numaradan arayın.`,
+    "rate-limit-global",
+    verdict.retryAfter
+  );
+}
+
+/** 5. adım: yalnızca gönderim gerçekten başarılı olduğunda çağrılır. */
+export function recordMailSent(tag: string): void {
+  recordUse(`global:mail:${tag}`, HOUR_MS);
 }
 
 export { PHONE };

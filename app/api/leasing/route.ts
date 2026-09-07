@@ -1,38 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendFormMail } from "@/lib/mailer";
-import { guardFormRequest, PHONE } from "@/lib/form-guard";
+import {
+  checkMailQuota,
+  guardIp,
+  guardPayload,
+  recordMailSent,
+  reject,
+  PHONE,
+} from "@/lib/form-guard";
+import { clientIp } from "@/lib/rate-limit";
 import { maskEmail, maskName, maskPhone, maskText, referenceCode } from "@/lib/privacy";
 
-/** Formun sığmayacağı büyüklükteki gövdeyi ayrıştırmadan reddet. */
+const TAG = "leasing";
+/** Formun sığmayacağı büyüklükteki gövde ayrıştırılmadan reddedilir. */
 const MAX_BODY_BYTES = 32 * 1024;
 
 export async function POST(req: NextRequest) {
   try {
-    const declaredSize = Number(req.headers.get("content-length") ?? 0);
-    if (declaredSize > MAX_BODY_BYTES) {
-      return NextResponse.json({ error: "Gönderilen içerik çok büyük" }, { status: 413 });
-    }
-
-    const data = await req.json();
-    if (!data || typeof data !== "object" || Array.isArray(data)) {
-      return NextResponse.json({ error: "Geçersiz istek" }, { status: 400 });
-    }
+    const ip = clientIp(req);
 
     // Kiralama başvurusu iletişim formundan çok daha seyrek gelir;
     // bu yüzden IP başına limit daha dar tutuldu.
-    const blocked = await guardFormRequest(req, data as Record<string, unknown>, {
-      tag: "leasing",
-      perIpLimit: 4,
-    });
-    if (blocked) {
+    const ipBlocked = guardIp(ip, { tag: TAG, perIpLimit: 4 });
+    if (ipBlocked) {
+      console.warn("[LEASING] engellendi", ipBlocked.reason, ipBlocked.ref);
+      return ipBlocked.response;
+    }
+
+    const raw = await req.text();
+    if (raw.length > MAX_BODY_BYTES) {
+      const blocked = reject(413, "Gönderilen içerik çok büyük.", "body-too-large");
       console.warn("[LEASING] engellendi", blocked.reason, blocked.ref);
       return blocked.response;
     }
 
-    const { company, brand, contact, sector, area, phone, email, message } =
-      data as Record<string, unknown>;
+    let data: unknown;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      return reject(400, "Geçersiz istek.", "bad-json").response;
+    }
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      return reject(400, "Geçersiz istek.", "bad-shape").response;
+    }
+    const payload = data as Record<string, unknown>;
+
+    const payloadBlocked = await guardPayload(payload, ip);
+    if (payloadBlocked) {
+      console.warn("[LEASING] engellendi", payloadBlocked.reason, payloadBlocked.ref);
+      return payloadBlocked.response;
+    }
+
+    const { company, brand, contact, sector, area, phone, email, message } = payload;
     if (!company || !brand || !contact || !sector || !phone || !email) {
-      return NextResponse.json({ error: "Zorunlu alanlar eksik" }, { status: 400 });
+      return reject(400, "Zorunlu alanlar eksik.", "missing-fields").response;
     }
 
     const submission = {
@@ -45,6 +66,12 @@ export async function POST(req: NextRequest) {
       email: String(email).slice(0, 200),
       message: String(message || "").slice(0, 5000),
     };
+
+    const quotaBlocked = checkMailQuota(TAG);
+    if (quotaBlocked) {
+      console.warn("[LEASING] engellendi", quotaBlocked.reason, quotaBlocked.ref);
+      return quotaBlocked.response;
+    }
 
     const result = await sendFormMail({
       subject: `KİRALAMA BAŞVURUSU — ${submission.brand} (${submission.company})`,
@@ -87,6 +114,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    recordMailSent(TAG);
     console.log("[LEASING] gonderildi", result.id);
     return NextResponse.json({ ok: true });
   } catch (err) {
